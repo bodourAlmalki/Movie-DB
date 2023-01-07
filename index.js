@@ -41,6 +41,8 @@ const movies = [
 { title: 'الإرهاب والكباب', year: 1992, rating: 6.2 } 
 ]
 
+
+
 app.get('/movies/create', (req, res) => {
     // Handle movie create
     res.send('Movie create')
@@ -59,6 +61,32 @@ app.get('/movies/create', (req, res) => {
     // Handle movie delete
     res.send('Movie delete')
   })
+  
+  app.get('/movies/create', (req, res) => {
+    // Handle movie create
+    res.send('Movie create')
+  })
+  //http://localhost:3000//movies/read/by-date/
+  app.get('/movies/read/by-date', (req, res) => {
+    const sortedMovies = movies.sort((a, b) => a.year - b.year)
+    res.json({ status: 200, data: sortedMovies })
+  })
+
+   //http://localhost:3000//movies/read/by-rating/
+  app.get('/movies/read/by-rating', (req, res) => {
+    const sortedMovies = movies.sort((a, b) => b.rating - a.rating)
+    res.json({ status: 200, data: sortedMovies })
+  })
+  
+    //http://localhost:3000//movies/read/by-title/
+  app.get('/movies/read/by-title', (req, res) => {
+    const sortedMovies = movies.sort((a, b) => (a.title < b.title) ? -1 : 1)
+    res.json({ status: 200, data: sortedMovies })
+  })
+  
+
+
+
   
   app.listen(3000, () => console.log('Example app listening on port 3000!'))
   
