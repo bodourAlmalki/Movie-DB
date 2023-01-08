@@ -41,13 +41,12 @@ app.get('/search', (req, res) => {
   })
 
 
-const movies = [ 
+let movies = [ 
 { id:1 ,title: 'Jaws', year: 1975, rating: 8 }, 
 { id:2 ,title: 'Avatar', year: 2009, rating: 7.8 }, 
 { id:3 ,title: 'Brazil', year: 1985, rating: 8 }, 
 { id:4 ,title: 'الإرهاب والكباب', year: 1992, rating: 6.2 } 
 ]
-
 
 
 app.get('/movies/create', (req, res) => {
@@ -78,6 +77,7 @@ app.get('/movies/create', (req, res) => {
     // Handle movie create
     res.send('Movie create')
   })
+
 
   //sort by date
   //http://localhost:3000//movies/read/by-date/
@@ -119,60 +119,96 @@ app.get('/movies/create', (req, res) => {
         }
       })
 
+
     //add a movie to the array
-    //http://localhost:3000//movies/read/id/....
+    //http://localhost:3000//movies/add/title ,ear ,rating ....
 
+    app.get('/movies/add', (req, res) => {
+      // Get the title, year, and rating from the query parameters
+      const { title, year, rating } = req.query;
+    
+      // Check if any of the required fields are missing
+      if (!title || !year || year.length !== 4 || isNaN(year)) {
+        // If any of the required fields are missing, return an error message
+        res.send({
+          status: 403,
+          error: true,
+          message: 'you cannot create a movie without providing a title and a year'
+        });
+      } else {
+        // If all of the required fields are present, create a new movie object
+        const newMovie = { title, year, rating: rating || 4 };
+    
+        // Add the new movie to the movies array
+        movies.push(newMovie);
+    
+        // Return the updated list of movies
+        res.send(movies);
+      }
+    });
 
+    
+
+  
+
+      // app.get('/movies/delete/:id', (req, res) => {
+      //   // Find the movie to delete
+      //   const movie = movies.find(movie => movie.id === parseInt(req.params.id))
       
-        // Get the title, year, and rating from the query string
-      
-      
-      //   // Validate the input
-      //   if (!title || !year || year.length !== 4 || isNaN(year)) {
-      //     res.status(403).json({ status: 403, error: true, message: 'You cannot create a movie without providing a title and a year' })
+      //   // If the movie does not exist, send an error response
+      //   if (!movie) {
+      //     res.status(404).json({ status: 404, error: true, message: `The movie ${req.params.id} does not exist` })
       //     return
       //   }
       
-      //   // Create the new movie object
-      //   const newMovie = {
-      //     title,
-      //     year: parseInt(year),
-      //     rating: rating ? parseInt(rating) : 4
-      //   }
-      
-      //   // Add the new movie to the movies array
-      //   movies = [...movies, newMovie]
+      //   // Delete the movie from the movies array
+      //   movies = movies.filter(movie => movie.id !== parseInt(req.params.id))
       
       //   // Send the updated list of movies in the response
       //   res.json({ status: 200, data: movies })
-      // })
+      // });
+      
 
-      app.get('/movies/add', (req, res) => {
-        // Get the title, year, and rating from the query parameters
-        const { title, year, rating } = req.query;
+      // app.get("/movies/delete/:id", (req, res) => {
+      //   const id = req.params.id;
+      //   // get specific id to index
+      //   const index = movies.findIndex(
+      //     (movie) => movie.title.toLowerCase() == id.toLowerCase()
+      //   );
+      //   // If the movie was not found, send an error message
+      //   if (index === -1) {
+      //     res.send({
+      //       status: 404,
+      //       error: true,
+      //       message: `The movie ${id} does not exist.`,
+      //     });
+      //   }
+      //   // Remove the movie from the array
+      //   movies.splice(index, 1);
       
-        // Check if any of the required fields are missing
-        if (!title || !year || year.length !== 4 || isNaN(year)) {
-          // If any of the required fields are missing, return an error message
-          res.send({
-            status: 403,
-            error: true,
-            message: 'you cannot create a movie without providing a title and a year'
-          });
-        } else {
-          // If all of the required fields are present, create a new movie object
-          const newMovie = { title, year, rating: rating || 4 };
+      //   // Send the updated list of movies as the response
+      //   res.send({ status: 200, data: movies });
+      // });
+
       
-          // Add the new movie to the movies array
-          movies.push(newMovie);
+
+      app.get('/movies/delete/:id', (req, res) => {
+        // Find the movie to delete
+        const movie = movies.find(movie => movie.id === parseInt(req.params.id))
       
-          // Return the updated list of movies
-          res.send(movies);
+        // If the movie does not exist, send an error response
+        if (!movie) {
+          res.status(404).json({ status: 404, error: true, message: `The movie ${req.params.id} does not exist` })
+          return
         }
-      });
-  
+      
+        // Delete the movie from the movies array
+        movies = movies.filter(movie => movie.id !== parseInt(req.params.id))
+      
+        // Send the updated list of movies in the response
+        res.json({ status: 200, data: movies })
+      })
 
 
-  
   app.listen(3000, () => console.log('Example app listening on port 3000!'))
   
