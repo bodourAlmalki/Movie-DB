@@ -147,50 +147,7 @@ app.get('/movies/create', (req, res) => {
       }
     });
 
-    
-
-  
-
-      // app.get('/movies/delete/:id', (req, res) => {
-      //   // Find the movie to delete
-      //   const movie = movies.find(movie => movie.id === parseInt(req.params.id))
-      
-      //   // If the movie does not exist, send an error response
-      //   if (!movie) {
-      //     res.status(404).json({ status: 404, error: true, message: `The movie ${req.params.id} does not exist` })
-      //     return
-      //   }
-      
-      //   // Delete the movie from the movies array
-      //   movies = movies.filter(movie => movie.id !== parseInt(req.params.id))
-      
-      //   // Send the updated list of movies in the response
-      //   res.json({ status: 200, data: movies })
-      // });
-      
-
-      // app.get("/movies/delete/:id", (req, res) => {
-      //   const id = req.params.id;
-      //   // get specific id to index
-      //   const index = movies.findIndex(
-      //     (movie) => movie.title.toLowerCase() == id.toLowerCase()
-      //   );
-      //   // If the movie was not found, send an error message
-      //   if (index === -1) {
-      //     res.send({
-      //       status: 404,
-      //       error: true,
-      //       message: `The movie ${id} does not exist.`,
-      //     });
-      //   }
-      //   // Remove the movie from the array
-      //   movies.splice(index, 1);
-      
-      //   // Send the updated list of movies as the response
-      //   res.send({ status: 200, data: movies });
-      // });
-
-      
+    //delete
 
       app.get('/movies/delete/:id', (req, res) => {
         // Find the movie to delete
@@ -208,6 +165,32 @@ app.get('/movies/create', (req, res) => {
         // Send the updated list of movies in the response
         res.json({ status: 200, data: movies })
       })
+
+//update 
+//http://localhost:3000/movies/update/3?title=bodour%20almalki%20Title&rating=9.5
+      app.get('/movies/update/:id', (req, res) => {
+        // Find the movie to update
+        const movie = movies.find(movie => movie.id === parseInt(req.params.id))
+      
+        // If the movie does not exist, send an error response
+        if (!movie) {
+          res.status(404).json({ status: 404, error: true, message: `The movie ${req.params.id} does not exist` })
+          return
+        }
+      
+        // Update the movie with the provided values
+        movie.title = req.query.title || movie.title
+        movie.rating = req.query.rating || movie.rating
+      
+        // Update the movies array with the modified movie
+        movies = movies.map(m => (m.id === movie.id ? movie : m))
+      
+        // Send the updated list of movies in the response
+        res.json({ status: 200, data: movies })
+      })
+      
+
+
 
 
   app.listen(3000, () => console.log('Example app listening on port 3000!'))
