@@ -5,9 +5,12 @@ const app = express()
 // http://localhost:3000/
 app.get('/', (req, res) => res.send('OK'))
 
+//test
 //http://localhost:3000/test
 app.get('/test', (req, res) => res.json({ status: 200, message: 'OK' }))
 
+
+//time
 //http://localhost:3000/time/
 
 app.get('/time', (req, res) => {
@@ -17,12 +20,16 @@ app.get('/time', (req, res) => {
 
   res.json({ status: 200, message: `${hours}:${minutes}` })
 })
+
+
 //http://localhost:3000/hello/:id(anything)/
 app.get('/hello/:id', (req, res) => {
   const { id } = req.params
   res.json({ status: 200, message: `Hello, ${id || 'world'}` })
 })
 
+
+//search
 //http://localhost:3000/search/
 app.get('/search', (req, res) => {
     const { s } = req.query
@@ -48,24 +55,31 @@ app.get('/movies/create', (req, res) => {
     res.send('Movie create')
   })
   
+  //read movie
   app.get('/movies/read', (req, res) => {
     res.json({ status: 200, data: movies })
   })
   
+
+  //update 
   app.get('/movies/update', (req, res) => {
     // Handle movie update
     res.send('Movie update')
   })
   
+  //delete
   app.get('/movies/delete', (req, res) => {
     // Handle movie delete
     res.send('Movie delete')
   })
   
+  //create
   app.get('/movies/create', (req, res) => {
     // Handle movie create
     res.send('Movie create')
   })
+
+  //sort by date
   //http://localhost:3000//movies/read/by-date/
   app.get('/movies/read/by-date', (req, res) => {
     // sort the movies db by  year from From oldest to newest
@@ -73,13 +87,15 @@ app.get('/movies/create', (req, res) => {
     res.json({ status: 200, data: sortedMovies })
   })
 
-   //http://localhost:3000//movies/read/by-rating/
+  //sort by rating
+//http://localhost:3000//movies/read/by-rating/
   app.get('/movies/read/by-rating', (req, res) => {
     //sort the movies db by rating from the highest to the lowest
     const sortedMovies = movies.sort((a, b) => b.rating - a.rating)
     res.json({ status: 200, data: sortedMovies })
   })
   
+  //sort by title
     //http://localhost:3000//movies/read/by-title/
   app.get('/movies/read/by-title', (req, res) => {
     //sort the movies db by title  from A-Z
@@ -88,8 +104,8 @@ app.get('/movies/create', (req, res) => {
     res.json({ status: 200, data: sortedMovies })
   })
 
-  
-    //http://localhost:3000//movies/read/id/
+    //read by id
+    //http://localhost:3000//movies/read/id/....
     app.get('/movies/read/id/:id', (req, res) => {
 
         // Find the movie with the matching id
@@ -102,8 +118,59 @@ app.get('/movies/create', (req, res) => {
           res.status(404).json({ status: 404, error: true, message: `The movie ${req.params.id} does not exist` })
         }
       })
-      
 
+    //add a movie to the array
+    //http://localhost:3000//movies/read/id/....
+
+
+      
+        // Get the title, year, and rating from the query string
+      
+      
+      //   // Validate the input
+      //   if (!title || !year || year.length !== 4 || isNaN(year)) {
+      //     res.status(403).json({ status: 403, error: true, message: 'You cannot create a movie without providing a title and a year' })
+      //     return
+      //   }
+      
+      //   // Create the new movie object
+      //   const newMovie = {
+      //     title,
+      //     year: parseInt(year),
+      //     rating: rating ? parseInt(rating) : 4
+      //   }
+      
+      //   // Add the new movie to the movies array
+      //   movies = [...movies, newMovie]
+      
+      //   // Send the updated list of movies in the response
+      //   res.json({ status: 200, data: movies })
+      // })
+
+      app.get('/movies/add', (req, res) => {
+        // Get the title, year, and rating from the query parameters
+        const { title, year, rating } = req.query;
+      
+        // Check if any of the required fields are missing
+        if (!title || !year || year.length !== 4 || isNaN(year)) {
+          // If any of the required fields are missing, return an error message
+          res.send({
+            status: 403,
+            error: true,
+            message: 'you cannot create a movie without providing a title and a year'
+          });
+        } else {
+          // If all of the required fields are present, create a new movie object
+          const newMovie = { title, year, rating: rating || 4 };
+      
+          // Add the new movie to the movies array
+          movies.push(newMovie);
+      
+          // Return the updated list of movies
+          res.send(movies);
+        }
+      });
+  
 
 
   
